@@ -1,10 +1,11 @@
 import os
 import random
-import pyotp
 from getpass import getpass
 from sys import argv
 from time import sleep
 
+import pyotp
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -213,10 +214,12 @@ if __name__ == "__main__":
                 totp_secret = os.getenv("NOIP_TOTP_KEY")
                 if not totp_secret:
                     exit_with_error("NOIP_TOTP_KEY environment variable not set. Exiting.")
+
                 if validate_2fa(totp_secret):
                     totp = pyotp.TOTP(totp_secret)
                     browser.execute_script("arguments[0].focus();", code_form)
                     ActionChains(browser).send_keys(totp.now()).perform()
+
 
             # Click submit button
             submit_button[0].click()
