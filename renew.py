@@ -1,5 +1,6 @@
 import os
 import random
+import pyotp
 from getpass import getpass
 from sys import argv
 from time import sleep
@@ -62,7 +63,6 @@ def get_credentials():
         raise ValueError("NOIP_USERNAME or NOIP_PASSWORD not set in environment.")
     return email, password
 
-    import pyotp
 
 def get_totp_code():
     totp_key = os.getenv("NOIP_TOTP_KEY")
@@ -210,9 +210,9 @@ if __name__ == "__main__":
 
             # Account has 2FA code
             elif CODE_METHOD == "app":
-                totp_secret = os.getenv("NO_IP_TOTP_KEY", "")
-                if len(totp_secret) == 0:
-                    totp_secret = str(input("Enter 2FA key: ")).replace("\n", "")
+                totp_secret = os.getenv("NOIP_TOTP_KEY")
+                if not totp_secret:
+                    exit_with_error("NOIP_TOTP_KEY environment variable not set. Exiting.")
                 if validate_2fa(totp_secret):
                     totp = pyotp.TOTP(totp_secret)
                     browser.execute_script("arguments[0].focus();", code_form)
