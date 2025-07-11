@@ -2,8 +2,8 @@ name: Renew No-IP
 
 on:
   schedule:
-    - cron: '0 3 1 * *'  # 1st of every month at 03:00 UTC
-  workflow_dispatch:      # Optional manual trigger
+    - cron: '0 3 1 * *'     # Runs at 03:00 UTC on the 1st day of every month
+  workflow_dispatch:         # Allows manual runs from GitHub UI
 
 jobs:
   renew:
@@ -28,11 +28,19 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium
+          pip install selenium pyotp
 
       - name: Run renewal script
         env:
           NOIP_USERNAME: ${{ secrets.NOIP_USERNAME }}
           NOIP_PASSWORD: ${{ secrets.NOIP_PASSWORD }}
           NOIP_TOTP_KEY: ${{ secrets.NOIP_TOTP_KEY }}
-        run: python renew.py
+        run: |
+          python renew.py
+
+      - name: Upload debug screenshot (if failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-after-failure
+          path: after_login.png
