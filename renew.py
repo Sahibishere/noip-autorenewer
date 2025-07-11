@@ -47,7 +47,6 @@ def exit_with_error(message):
     browser.quit()
     exit(1)
 
-
 import os
 
 def get_credentials():
