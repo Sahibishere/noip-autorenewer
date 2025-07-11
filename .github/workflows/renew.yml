@@ -1,5 +1,11 @@
-  name: Install Chromium and ChromeDriver and renew No-IP
- jobs:
+name: Renew No-IP
+
+on:
+  schedule:
+    - cron: '0 3 1 * *'  # 1st of every month at 03:00 UTC
+  workflow_dispatch:      # Optional manual trigger
+
+jobs:
   renew:
     runs-on: ubuntu-latest
 
@@ -19,32 +25,14 @@
           sudo ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver
           sudo ln -s /usr/bin/chromium-browser /usr/local/bin/chrome
 
-  schedule:
-    - cron: '0 3 1 * *'  # Runs at 03:00 UTC on the 1st of every month
-  workflow_dispatch:     # Allows manual triggering
-
-jobs:
-  renew:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install selenium
 
       - name: Run renewal script
         env:
           NOIP_USERNAME: ${{ secrets.NOIP_USERNAME }}
           NOIP_PASSWORD: ${{ secrets.NOIP_PASSWORD }}
-          NOIP_TOTP_KEY: ${{ secrets.NOIP_TOTP_KEY }}  # Optional
-        run: |
-          python renew.py
-
+          NOIP_TOTP_KEY: ${{ secrets.NOIP_TOTP_KEY }}
+        run: python renew.py
