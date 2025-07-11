@@ -28,5 +28,5 @@ jobs:
           NOIP_PASSWORD: ${{ secrets.NOIP_PASSWORD }}
           NOIP_TOTP_KEY: ${{ secrets.NOIP_TOTP_KEY }}  # Optional
         run: |
-          python noip-renew.py
+          python renew.py
 
