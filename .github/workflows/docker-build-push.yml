@@ -19,7 +19,7 @@ on:
         type: string
 
 env:
-  IMAGE_NAME: "bestskillz"
+  IMAGE_NAME: "bestskillz/noip-renewer"
 
 jobs:
   build-and-push:
