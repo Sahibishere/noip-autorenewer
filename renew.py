@@ -91,17 +91,6 @@ if __name__ == "__main__":
 
     email, password = get_credentials()
 
-    # Set up browser
-    profile = FirefoxProfile()
-    profile.set_preference("general.useragent.override", get_user_agent())
-    browser_options = webdriver.FirefoxOptions()
-    browser_options.add_argument("--headless")
-    browser_options.profile = profile
-    service = Service(
-        executable_path="/usr/local/bin/geckodriver", log_output="/dev/null"
-    )
-    browser = webdriver.Firefox(options=browser_options, service=service)
-
     # Open browser
     print(
         'Using user agent "'
