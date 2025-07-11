@@ -1,4 +1,4 @@
-- name: Install Chromium and ChromeDriver and renew No-IP
+  name: Install Chromium and ChromeDriver and renew No-IP
  jobs:
   renew:
     runs-on: ubuntu-latest
