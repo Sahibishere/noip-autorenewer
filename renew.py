@@ -62,6 +62,19 @@ def get_credentials():
         raise ValueError("NOIP_USERNAME or NOIP_PASSWORD not set in environment.")
     return email, password
 
+    import pyotp
+
+def get_totp_code():
+    totp_key = os.getenv("NOIP_TOTP_KEY")
+    if not totp_key:
+        print("No TOTP key set. Skipping TOTP.")
+        return None
+    try:
+        totp = pyotp.TOTP(totp_key)
+        return totp.now()
+    except Exception as e:
+        raise ValueError(f"Invalid TOTP key or generation error: {e}")
+
 
 
 def validate_otp(code):
