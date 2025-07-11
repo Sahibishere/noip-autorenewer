@@ -48,32 +48,15 @@ def exit_with_error(message):
     exit(1)
 
 
+import os
+
 def get_credentials():
-    """
-    Retrieves the credentials required for authentication.
-
-    Returns:
-        - email (str): The email address associated with the credentials.
-        - password (str): The password associated with the credentials.
-
-    Notes:
-        - The function first checks if the email and password are already set as environment variables.
-        - If the email or password is not set, it checks if the command line arguments were passed.
-        - If the email or password is still not set, it prompts the user to enter the values interactively.
-    """
-
-    email = os.getenv("NO_IP_USERNAME", "")
-    password = os.getenv("NO_IP_PASSWORD", "")
-
-    if len(email) == 0 or len(password) == 0:
-        if len(argv) == 3:
-            email = argv[1]
-            password = argv[2]
-        else:
-            email = str(input("Email: ")).replace("\n", "")
-            password = getpass("Password: ").replace("\n", "")
-
+    email = os.getenv("NOIP_USERNAME")
+    password = os.getenv("NOIP_PASSWORD")
+    if not email or not password:
+        raise ValueError("NOIP_USERNAME or NOIP_PASSWORD not set in environment.")
     return email, password
+
 
 
 def validate_otp(code):
