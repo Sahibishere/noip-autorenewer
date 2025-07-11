@@ -1,5 +1,4 @@
-name: Renew No-IP
-- name: Install Chromium and ChromeDriver
+- name: Install Chromium and ChromeDriver and renew No-IP
   run: |
     sudo apt-get update
     sudo apt-get install -y chromium-browser chromium-chromedriver
