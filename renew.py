@@ -4,17 +4,18 @@ from getpass import getpass
 from sys import argv
 from time import sleep
 
-import pyotp
-import requests
-from deep_translator import GoogleTranslator
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+
+browser_options = ChromeOptions()
+browser_options.add_argument("--headless")
+browser_options.add_argument("--no-sandbox")
+browser_options.add_argument("--disable-dev-shm-usage")
+
+service = ChromeService(executable_path='/usr/local/bin/chromedriver')
+
+browser = webdriver.Chrome(options=browser_options, service=service)
 
 
 def get_hosts():
