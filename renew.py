@@ -49,6 +49,7 @@ def exit_with_error(message):
 
 import os
 
+
 def get_credentials():
     email = os.getenv("NOIP_USERNAME")
     password = os.getenv("NOIP_PASSWORD")
