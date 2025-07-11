@@ -133,7 +133,7 @@ if __name__ == "__main__":
         # Find and click login button
         try:
             WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
-                expected_conditions.visibility_of_element_located(
+                EC.visibility_of_element_located(
                     (By.ID, "clogs-captcha-button")
                 )
             )
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         # Wait for login to complete
         try:
             WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
-                expected_conditions.visibility_of_any_elements_located(
+                EC.visibility_of_any_elements_located(
                     (By.CLASS_NAME, "nav-link")
                 )
             )
@@ -160,7 +160,7 @@ if __name__ == "__main__":
             # Wait for submit button to ensure page is loaded
             try:
                 WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
-                    expected_conditions.element_to_be_clickable((By.NAME, "submit"))
+                    EC.element_to_be_clickable((By.NAME, "submit"))
                 )
                 submit_button = browser.find_elements(By.NAME, "submit")
                 if len(submit_button) < 1:
@@ -211,7 +211,7 @@ if __name__ == "__main__":
         # Wait for account dashboard to load
         try:
             WebDriverWait(driver=browser, timeout=120, poll_frequency=3).until(
-                expected_conditions.visibility_of_element_located(
+                EC.visibility_of_element_located(
                     (By.ID, "content-wrapper")
                 )
             )
@@ -227,7 +227,7 @@ if __name__ == "__main__":
         # Wait for hostnames page to load
         try:
             WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
-                expected_conditions.visibility_of(
+                EC.visibility_of(
                     browser.find_element(by=By.ID, value="host-panel")
                 )
             )
