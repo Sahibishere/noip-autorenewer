@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
         # Find and fill login form
         try:
-            username_input = WebDriver(browser, 10).until(
+            username_input = WebDriverWait(browser, 10).until(
                 lambda browser: browser.find_element(by=By.ID, value="username")
             )
         except TimeoutException:
@@ -133,7 +133,7 @@ if __name__ == "__main__":
             )
 
         try:
-            password_input = WebDriver(browser, 10).until(
+            password_input = WebDriverWait(browser, 10).until(
                 lambda browser: browser.find_element(by=By.ID, value="password")
             )
         except TimeoutException:
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
         # Find and click login button
         try:
-            WebDriver(driver=browser, timeout=60, poll_frequency=3).until(
+            WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
                 EC.visibility_of_element_located(
                     (By.ID, "clogs-captcha-button")
                 )
@@ -158,19 +158,6 @@ if __name__ == "__main__":
                 message="Login button not found within the specified timeout."
             )
 
-        #  for login to complete
-        try:
-            WebDriver(driver=browser, timeout=60, poll_frequency=3).until(
-                EC.visibility_of_any_elements_located(
-                    (By.CLASS_NAME, "nav-link")
-                )
-            )
-        except TimeoutException:
-            # 📸 Capture the page for debugging
-            browser.save_screenshot("after_login.png")
-            with open("page.html", "w", encoding="utf-8") as f:
-                f.write(browser.page_source)
-            exit_with_error("Could not do post login action. Exiting.")
 
         # Check if login has 2FA enabled and handle it
         if browser.current_url.find("2fa") > -1:
@@ -234,13 +221,14 @@ if __name__ == "__main__":
         try:
             WebDriverWait(browser, 20).until(
                 lambda d: (
-                    "my.noip.com" in d.current_url           # dashboard loaded
-                    or d.find_elements(By.ID, "totp-input")  # 6-box TOTP form
-        )
-    )
+                    "my.noip.com" in d.current_url               # dashboard
+                    or d.find_elements(By.ID, "totp-input")      # 6-box TOTP form
+                )
+            )
         except TimeoutException:
             browser.save_screenshot("after_login.png")
             exit_with_error("Login did not advance to dashboard or 2-factor page.")
+
 
 
 
