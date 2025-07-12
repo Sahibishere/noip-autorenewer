@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
         # Find and fill login form
         try:
-            username_input = WebDriverWait(browser, 10).until(
+            username_input = WebDriver(browser, 10).until(
                 lambda browser: browser.find_element(by=By.ID, value="username")
             )
         except TimeoutException:
@@ -133,7 +133,7 @@ if __name__ == "__main__":
             )
 
         try:
-            password_input = WebDriverWait(browser, 10).until(
+            password_input = WebDriver(browser, 10).until(
                 lambda browser: browser.find_element(by=By.ID, value="password")
             )
         except TimeoutException:
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
         # Find and click login button
         try:
-            WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
+            WebDriver(driver=browser, timeout=60, poll_frequency=3).until(
                 EC.visibility_of_element_located(
                     (By.ID, "clogs-captcha-button")
                 )
@@ -158,9 +158,9 @@ if __name__ == "__main__":
                 message="Login button not found within the specified timeout."
             )
 
-        # Wait for login to complete
+        #  for login to complete
         try:
-            WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
+            WebDriver(driver=browser, timeout=60, poll_frequency=3).until(
                 EC.visibility_of_any_elements_located(
                     (By.CLASS_NAME, "nav-link")
                 )
@@ -230,15 +230,18 @@ if __name__ == "__main__":
                 print("TOTP entered and submitted.")
 
 
-        # ---- Wait until we are off the /login or /2fa page ----
+        # ---- Wait until we are on the dashboard OR the TOTP page ----
         try:
-            WebDriverWait(browser, 15).until(
-                lambda d: "my.noip.com" in d.current_url
-            )
-            print("Login successful")
+            WebDriverWait(browser, 20).until(
+                lambda d: (
+                    "my.noip.com" in d.current_url           # dashboard loaded
+                    or d.find_elements(By.ID, "totp-input")  # 6-box TOTP form
+        )
+    )
         except TimeoutException:
             browser.save_screenshot("after_login.png")
-            exit_with_error("Dashboard did not load after Verify / TOTP step.")
+            exit_with_error("Login did not advance to dashboard or 2-factor page.")
+
 
 
         # Go to hostnames page
