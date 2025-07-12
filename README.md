@@ -10,54 +10,7 @@
 [![renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg?style=for-the-badge)](https://renovatebot.com)
 
 :uk:: Renewing No-IP hosts by browser automation. Renews all hosts available for confirmation, without any user interaction with a browser. <br/>
-:portugal:: Renovação de <i>hosts</i> No-IP recorrendo a automatização do navegador. Renova todos os <i>hosts</i> disponíveis para confirmação sem ser necessário interação do utilizador com um navegador.
-
-#### Requirements
-- [Docker](https://www.docker.com/)
-
-## Obtaining image
-
-#### Pulling image from [Docker Hub](https://hub.docker.com/r/simaofsilva/noip-renewer/tags) 
-
-```shell script
-# Debian
-docker pull simaofsilva/noip-renewer:debian
-
-# Alpine
-docker pull simaofsilva/noip-renewer:alpine
-# or
-docker pull simaofsilva/noip-renewer:latest
-```
-
-#### Building image locally
-
-```sh
-docker build -t simaofsilva/noip-renewer -f Dockerfile.dev .
-```
-
-## Using image
-
-```sh
-docker run --rm -it simaofsilva/noip-renewer:<TAG>
-```
-or
-```sh
-docker run --rm -it simaofsilva/noip-renewer:<TAG> <EMAIL> <PASSWORD>
-```
-or
-```sh
-docker run --rm --env NO_IP_USERNAME=<EMAIL> --env NO_IP_PASSWORD=<PASSWORD> simaofsilva/noip-renewer:<TAG> 
-```
-or with 2FA
-```sh
-docker run --rm --env NO_IP_USERNAME=<EMAIL> --env NO_IP_PASSWORD=<PASSWORD> --env NO_IP_TOTP_KEY=<NOIP TOTP KEY> simaofsilva/noip-renewer:<TAG> 
-```
-or with translation disabled
-```sh
-docker run --rm --env NO_IP_USERNAME=<EMAIL> --env NO_IP_PASSWORD=<PASSWORD> --env TRANSLATE_ENABLED=false simaofsilva/noip-renewer:<TAG> 
-```
-
-## Known issues / limitations
-* The script assumes that the No-IP account language is set to English. For other languages it depends on the translation provided by [googletrans](https://pypi.org/project/googletrans/) so it might not work in other languages ([#11](https://github.com/simao-silva/noip-renewer/issues/11)). In any case, translation can be disabled by setting `TRANSLATE_ENABLED` to `false`; 
-
-* In fresh accounts an extra pop up might appear that unable the script to proceed ([#14](https://github.com/simao-silva/noip-renewer/issues/14)). It appears to not show on following renovations.
+# This is a script which run using github actions once a month to renew your no ip free hostname
+  # Instrcutions to run manually use the actions tab and run the Renew No-IP Workflow
+    # You will need to set action secrets by forking this repository and include the following DOCKERHUB_TOKEN, DOCKERHUB_USERNAME, NOIP_PASSWORD, NOIP_TOTP_KEY, and NOIP_USERNAME
+      # All of the values that you need are pretty self explantory and explained by the name. For the DOCKERHUB_TOKEN, you will have to create a personal access token on your hub.docker.com account by going to settings and give read/write access to this repository. Another clarification is that the NOIP_TOTP_KEY is the 2 factor authentication key you get in the very begging when you are enabling 2fa by authenticator app, you can export your 2fa through many authneticator apps and use taht to see what the TOTP key is to enter as the value.
