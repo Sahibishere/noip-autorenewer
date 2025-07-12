@@ -26,13 +26,14 @@ browser = webdriver.Chrome(options=browser_options, service=service)
 
 def get_hosts():
     """
-    Return every hostname “row” on the Dynamic-DNS page.
-    Each row is a <div class="full-width d-block …"> block.
+    Return every hostname row (<tr>) in the host-panel table.
     """
-    return browser.find_elements(
-        By.CSS_SELECTOR,
-        "div.full-width.d-block.pull-left.pl-20.pb-15.pt-15"
+    return (
+        browser.find_element(By.ID, "host-panel")      # outer wrapper
+        .find_element(By.TAG_NAME, "tbody")
+        .find_elements(By.TAG_NAME, "tr")
     )
+
 
 
 def translate(text):
@@ -241,10 +242,10 @@ if __name__ == "__main__":
         browser.get(HOST_URL)
 
         try:
-            WebDriverWait(browser, 30).until(
+            WebDriverWait(browser, 20).until(
                 lambda d: (
                     "dynamic-dns" in d.current_url and
-                    d.find_elements(By.XPATH, "//strong/a[contains(., 'Dynamic DNS Hostnames')]")
+                    d.find_elements(By.ID, "host-panel")
                 )
             )
             print("Hosts page loaded.")
@@ -263,7 +264,7 @@ if __name__ == "__main__":
                 current_host = host.find_element(by=By.TAG_NAME, value="a").text
                 print('Checking if host "' + current_host + '" needs confirmation')
                 try:
-                    button = host.find_element(by=By.TAG_NAME, value="a")
+                    button = host.find_element(by=By.TAG_NAME, value="button")
                 except NoSuchElementException as e:
                     break
 
