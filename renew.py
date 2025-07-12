@@ -159,6 +159,18 @@ if __name__ == "__main__":
         except TimeoutException:
             exit_with_error("Log-In button never became clickable.")
 
+        # ---- Wait until we are on the dashboard OR the TOTP page ----
+        try:
+            WebDriverWait(browser, 20).until(
+                lambda d: (
+                    "my.noip.com" in d.current_url               # dashboard
+                    or d.find_elements(By.ID, "totp-input")      # 6-box TOTP form
+                )
+            )
+        except TimeoutException:
+            browser.save_screenshot("after_login.png")
+            exit_with_error("Login did not advance to dashboard or 2-factor page.")
+
 
 
         # Check if login has 2FA enabled and handle it
