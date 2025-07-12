@@ -11,6 +11,6 @@
 
 :uk:: Renewing No-IP hosts by browser automation. Renews all hosts available for confirmation, without any user interaction with a browser. <br/>
 # This is a script which run using github actions once a month to renew your no ip free hostname
-  # Instrcutions to run manually use the actions tab and run the Renew No-IP Workflow
+  # Instructions to run manually use the actions tab and run the Renew No-IP Workflow
     # You will need to set action secrets by forking this repository and include the following DOCKERHUB_TOKEN, DOCKERHUB_USERNAME, NOIP_PASSWORD, NOIP_TOTP_KEY, and NOIP_USERNAME
       # All of the values that you need are pretty self explantory and explained by the name. For the DOCKERHUB_TOKEN, you will have to create a personal access token on your hub.docker.com account by going to settings and give read/write access to this repository. Another clarification is that the NOIP_TOTP_KEY is the 2 factor authentication key you get in the very begging when you are enabling 2fa by authenticator app, you can export your 2fa through many authneticator apps and use taht to see what the TOTP key is to enter as the value.
