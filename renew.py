@@ -199,6 +199,31 @@ if __name__ == "__main__":
             except NoSuchElementException:
                 CODE_METHOD = None
 
+            # ---- Six-digit TOTP (id="totp-input") ----
+            if CODE_METHOD == "totp6":
+                totp_secret = os.getenv("NOIP_TOTP_KEY")
+                if not totp_secret:
+                    exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
+
+                totp_code = pyotp.TOTP(totp_secret).now()
+                otp_inputs = code_form.find_elements(By.TAG_NAME, "input")
+                if len(otp_inputs) != 6:
+                    exit_with_error("Expected 6 input boxes for TOTP, found "
+                                    f"{len(otp_inputs)}. Layout may have changed.")
+
+                for idx, digit in enumerate(totp_code):
+                    otp_inputs[idx].send_keys(digit)
+
+                # ✅ Step 1: Small delay to ensure all digits register
+                sleep(1)
+
+                # click Verify (name="submit")
+                submit_button = WebDriverWait(browser, 10).until(
+                    EC.element_to_be_clickable((By.NAME, "submit"))
+                )
+                browser.execute_script("arguments[0].scrollIntoView(true);", submit_button)
+                browser.execute_script("arguments[0].click();", submit_button)
+                print("Clicked Verify (submit) button.")
 
             # Account has email verification code
             if CODE_METHOD == "email":
@@ -253,21 +278,26 @@ if __name__ == "__main__":
 
         # Go to hostnames page
         browser.get(HOST_URL)
+        sleep(2)  # wait for possible redirect
 
-        # --- go to Dynamic-DNS page ---
-        browser.get(HOST_URL)
+        # Print current URL to see if we're actually on the host page
+        print("📍 Current URL after host page load:", browser.current_url)
+        browser.save_screenshot("host_page_check.png")
 
+        # Check if we're back on the login page (session may have failed)
+        if "login" in browser.current_url:
+            exit_with_error("❌ Redirected back to login — session may have failed after 2FA.")
+
+        # Now check for the host panel
         try:
             WebDriverWait(browser, 20).until(
-                lambda d: (
-                    "dynamic-dns" in d.current_url and
-                    d.find_elements(By.ID, "host-panel")
-                )
+                EC.presence_of_element_located((By.ID, "host-panel"))
             )
-            print("Hosts page loaded.")
+            print("✅ Hosts page loaded.")
         except TimeoutException:
             browser.save_screenshot("hosts_page_error.png")
-            exit_with_error("Could not load NO-IP hostnames page.")
+            exit_with_error("❌ Could not load NO-IP hostnames page — host panel missing.")
+
 
 
     # Confirm hosts
