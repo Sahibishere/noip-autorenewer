@@ -270,10 +270,10 @@ if __name__ == "__main__":
                     print('Host "' + current_host + '" confirmed')
                     sleep(0.25)
 
-            if confirmed_hosts == 1:
-                print("1 host confirmed")
+            if confirmed_hosts == 0:
+                print("No hosts needed confirmation. Everything is up to date.")
             else:
-                print(str(confirmed_hosts) + " hosts confirmed")
+                print(f"{confirmed_hosts} host(s) confirmed.")
 
             print("Finished")
 
