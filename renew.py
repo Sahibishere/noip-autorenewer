@@ -249,6 +249,17 @@ if __name__ == "__main__":
                 # Optional: take a screenshot for debugging
                 browser.save_screenshot("before_totp_input.png")
                 print("📸 Screenshot saved: before_totp_input.png")
+            
+            # Dismiss the "Locale Mismatch" popup if it appears
+            try:
+                WebDriverWait(browser, 5).until(
+                    EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Yes')]"))
+                )
+                locale_popup_button = browser.find_element(By.XPATH, "//button[contains(text(), 'Yes')]")
+                browser.execute_script("arguments[0].click();", locale_popup_button)
+                print("🟢 Locale mismatch popup dismissed.")
+            except TimeoutException:
+                print("🔵 No locale mismatch popup appeared.")
 
                 # ✅ Find the 6 TOTP input fields freshly by CSS selector
                 otp_inputs = browser.find_elements(By.CSS_SELECTOR, "#totp-input input")
