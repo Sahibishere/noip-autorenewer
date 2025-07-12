@@ -166,7 +166,11 @@ if __name__ == "__main__":
                 )
             )
         except TimeoutException:
-            exit_with_error(message="Could not do post login action. Exiting.")
+            # 📸 Capture the page for debugging
+            browser.save_screenshot("after_login.png")
+            with open("page.html", "w", encoding="utf-8") as f:
+                f.write(browser.page_source)
+            exit_with_error("Could not do post login action. Exiting.")
 
         # Check if login has 2FA enabled and handle it
         if browser.current_url.find("2fa") > -1:
