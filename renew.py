@@ -237,29 +237,42 @@ if __name__ == "__main__":
                     else:
                         exit_with_error(message="Email code input not found. Exiting.")
 
-            # ---- Six-digit TOTP (id="totp-input") ----
-            if CODE_METHOD == "totp6":
-                totp_secret = os.getenv("NOIP_TOTP_KEY")
-                if not totp_secret:
-                    exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
+        # ---- Six-digit TOTP (id="totp-input") ----
+        if CODE_METHOD == "totp6":
+            totp_secret = os.getenv("NOIP_TOTP_KEY")
+            if not totp_secret:
+                exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
 
-                totp_code = pyotp.TOTP(totp_secret).now()
-                otp_inputs = code_form.find_elements(By.TAG_NAME, "input")
-                if len(otp_inputs) != 6:
-                    exit_with_error("Expected 6 input boxes for TOTP, found "
-                                    f"{len(otp_inputs)}. Layout may have changed.")
+            totp_code = pyotp.TOTP(totp_secret).now()
 
-                for idx, digit in enumerate(totp_code):
-                    otp_inputs[idx].send_keys(digit)
+            try:
+                # Optional: take a screenshot for debugging
+                browser.save_screenshot("before_totp_input.png")
+                print("📸 Screenshot saved: before_totp_input.png")
 
-                # click Verify (name="submit")
-                # click the Verify button safely
+                # ✅ Find the 6 TOTP input fields freshly by CSS selector
+                otp_inputs = browser.find_elements(By.CSS_SELECTOR, "#totp-input input")
+            except Exception as e:
+                exit_with_error(f"❌ Failed to locate TOTP input boxes: {e}")
+
+            if len(otp_inputs) != 6:
+                exit_with_error("Expected 6 input boxes for TOTP, found "
+                                f"{len(otp_inputs)}. Layout may have changed.")
+
+            for idx, digit in enumerate(totp_code):
+                otp_inputs[idx].send_keys(digit)
+
+            sleep(1)  # ensure digits are processed
+
+            try:
                 submit_button = WebDriverWait(browser, 10).until(
                     EC.element_to_be_clickable((By.NAME, "submit"))
                 )
                 browser.execute_script("arguments[0].scrollIntoView(true);", submit_button)
                 browser.execute_script("arguments[0].click();", submit_button)
                 print("Clicked Verify (submit) button.")
+            except Exception as e:
+                exit_with_error(f"❌ Failed to click Verify button: {e}")
 
 
         # ---- Wait until we are on the dashboard OR the TOTP page ----
