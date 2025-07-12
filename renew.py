@@ -314,12 +314,11 @@ if __name__ == "__main__":
         exit(1)
 
     try:
-        # Main script logic goes here (2FA, host confirmation, etc.)
-    ...
+        pass  # Placeholder for 2FA and host confirmation logic
 
         print("✅ Logging off...")
         browser.get(LOGOUT_URL)
-
+       
     except Exception as e:
         print("❌ Script failed with error:", e)
         browser.save_screenshot("fatal_error.png")
