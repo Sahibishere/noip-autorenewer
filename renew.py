@@ -227,8 +227,13 @@ if __name__ == "__main__":
                     otp_inputs[idx].send_keys(digit)
 
                 # click Verify (name="submit")
-                browser.find_element(By.NAME, "submit").click()
-                print("TOTP entered and submitted.")
+                # click the Verify button safely
+                submit_button = WebDriverWait(browser, 10).until(
+                    EC.element_to_be_clickable((By.NAME, "submit"))
+                )
+                browser.execute_script("arguments[0].scrollIntoView(true);", submit_button)
+                browser.execute_script("arguments[0].click();", submit_button)
+                print("Clicked Verify (submit) button.")
 
 
         # ---- Wait until we are on the dashboard OR the TOTP page ----
