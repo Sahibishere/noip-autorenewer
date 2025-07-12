@@ -1,9 +1,11 @@
 name: Renew No-IP
 
 on:
+  # run every SATURDAY at 03:00 UTC  (once per week, safely inside the 7-day window)
   schedule:
-    - cron: '0 3 1 * *'     # Runs at 03:00 UTC on the 1st day of every month
-  workflow_dispatch:         # Allows manual runs from GitHub UI
+    - cron: '0 3 * * 6'
+  workflow_dispatch:        # <-- leave this so you can run it by hand
+
 
 jobs:
   renew:
