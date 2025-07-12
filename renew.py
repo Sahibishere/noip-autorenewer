@@ -311,6 +311,6 @@ except Exception as e:
         finally:
             print("Logging off\n\n")
             browser.get(LOGOUT_URL)
-        else:
-            print("Cannot access login page:\t" + LOGIN_URL)
+    else:
+        print("Cannot access login page:\t" + LOGIN_URL)
     browser.quit()
