@@ -271,39 +271,46 @@ if __name__ == "__main__":
 
 
         # Confirm hosts
+try:
+    hosts = get_hosts()
+    print("Confirming hosts phase")
+    confirmed_hosts = 0
+
+    for host in hosts:
         try:
-            hosts = get_hosts()
-            print("Confirming hosts phase")
-            confirmed_hosts = 0
+            current_host = host.find_element(by=By.TAG_NAME, value="a").text
+            print(f'Checking if host "{current_host}" needs confirmation')
+        except Exception:
+            print("⚠️ Could not read host name — skipping.")
+            continue
 
-            for host in hosts:
-                current_host = host.find_element(by=By.TAG_NAME, value="a").text
-                print('Checking if host "' + current_host + '" needs confirmation')
-                try:
-                    button = host.find_element(by=By.TAG_NAME, value="button")
-                except NoSuchElementException as e:
-                    break
+        try:
+            button = host.find_element(by=By.TAG_NAME, value="button")
+        except NoSuchElementException:
+            print(f'No button found for host "{current_host}" — skipping.')
+            continue
 
-                if button.text == "Confirm" or translate(button.text) == "Confirm":
-                    button.click()
-                    confirmed_hosts += 1
-                    print('Host "' + current_host + '" confirmed')
-                    sleep(0.25)
+        if button.text.strip().lower() == "confirm" or translate(button.text).strip().lower() == "confirm":
+            button.click()
+            confirmed_hosts += 1
+            print(f'✅ Host "{current_host}" confirmed')
+            sleep(0.5)  # avoid rate limits
 
-                if confirmed_hosts == 1:
-                    print("1 host confirmed")
-                else:
-                    print(str(confirmed_hosts) + " hosts confirmed")
+    # Summary message after loop
+    if confirmed_hosts == 0:
+        print("⚠️ No hosts required confirmation.")
+    elif confirmed_hosts == 1:
+        print("✅ 1 host confirmed.")
+    else:
+        print(f"✅ {confirmed_hosts} hosts confirmed.")
 
-                print("Finished")
-
-        except Exception as e:
-            print("Error: ", e)
+except Exception as e:
+    print("❌ Error during confirmation phase:", e)
 
         # Log off
         finally:
             print("Logging off\n\n")
             browser.get(LOGOUT_URL)
-    else:
-        print("Cannot access login page:\t" + LOGIN_URL)
+        else:
+            print("Cannot access login page:\t" + LOGIN_URL)
     browser.quit()
