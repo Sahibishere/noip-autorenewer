@@ -282,30 +282,30 @@ if __name__ == "__main__":
                 print(f'Checking if host "{current_host}" needs confirmation')
             except Exception:
                 print("⚠️ Could not read host name — skipping.")
-            continue
+                continue
 
-        try:
-            button = host.find_element(by=By.TAG_NAME, value="button")
-        except NoSuchElementException:
-            print(f'No button found for host "{current_host}" — skipping.')
-            continue
+            try:
+                button = host.find_element(by=By.TAG_NAME, value="button")
+            except NoSuchElementException:
+                print(f'No button found for host "{current_host}" — skipping.')
+                continue
 
-        if button.text.strip().lower() == "confirm" or translate(button.text).strip().lower() == "confirm":
-            button.click()
-            confirmed_hosts += 1
-            print(f'✅ Host "{current_host}" confirmed')
-            sleep(0.5)  # avoid rate limits
+            if button.text.strip().lower() == "confirm" or translate(button.text).strip().lower() == "confirm":
+                button.click()
+                confirmed_hosts += 1
+                print(f'✅ Host "{current_host}" confirmed')
+                sleep(0.5)  # avoid rate limits
 
     # Summary message after loop
-    if confirmed_hosts == 0:
-        print("⚠️ No hosts required confirmation.")
-    elif confirmed_hosts == 1:
-        print("✅ 1 host confirmed.")
-    else:
-        print(f"✅ {confirmed_hosts} hosts confirmed.")
+        if confirmed_hosts == 0:
+            print("⚠️ No hosts required confirmation.")
+        elif confirmed_hosts == 1:
+            print("✅ 1 host confirmed.")
+        else:
+            print(f"✅ {confirmed_hosts} hosts confirmed.")
 
-except Exception as e:
-    print("❌ Error during confirmation phase:", e)
+    except Exception as e:
+        print("❌ Error during confirmation phase:", e)
 
     # Log off
     finally:
