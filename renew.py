@@ -206,7 +206,8 @@ if __name__ == "__main__":
                     exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
 
                 totp_code = pyotp.TOTP(totp_secret).now()
-                otp_inputs = code_form.find_elements(By.TAG_NAME, "input")
+                otp_inputs = browser.find_elements(By.CSS_SELECTOR, "#totp-input input")
+
                 if len(otp_inputs) != 6:
                     exit_with_error("Expected 6 input boxes for TOTP, found "
                                     f"{len(otp_inputs)}. Layout may have changed.")
