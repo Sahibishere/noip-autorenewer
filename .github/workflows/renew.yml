@@ -38,6 +38,15 @@ jobs:
         run: |
           python renew.py
 
+      - name: Upload debug artifacts
+        if: failure()             # only when the job fails
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-after-login
+          path: |
+            after_login.png
+            page.html
+
       - name: Upload debug screenshot (if failure)
         if: failure()
         uses: actions/upload-artifact@v4
