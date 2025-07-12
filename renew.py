@@ -18,6 +18,10 @@ browser_options = ChromeOptions()
 browser_options.add_argument("--headless")
 browser_options.add_argument("--no-sandbox")
 browser_options.add_argument("--disable-dev-shm-usage")
+browser_options.add_argument("--disable-blink-features=AutomationControlled")
+browser_options.add_argument("start-maximized")
+browser_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+browser_options.add_experimental_option("useAutomationExtension", False)
 
 service = ChromeService(executable_path='/usr/local/bin/chromedriver')
 
