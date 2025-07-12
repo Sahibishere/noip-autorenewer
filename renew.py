@@ -307,10 +307,23 @@ if __name__ == "__main__":
     except Exception as e:
         print("❌ Error during confirmation phase:", e)
 
-    # Log off
+    # Ensure login page is accessible
+    if browser.current_url != LOGIN_URL:
+        print("❌ Cannot access login page:\t" + LOGIN_URL)
+        browser.quit()
+        exit(1)
+
+    try:
+        # Main script logic goes here (2FA, host confirmation, etc.)
+    ...
+
+        print("✅ Logging off...")
+        browser.get(LOGOUT_URL)
+
+    except Exception as e:
+        print("❌ Script failed with error:", e)
+        browser.save_screenshot("fatal_error.png")
+
     finally:
-            print("Logging off\n\n")
-            browser.get(LOGOUT_URL)
-    else:
-        print("Cannot access login page:\t" + LOGIN_URL)
-    browser.quit()
+        print("🧹 Closing browser.")
+        browser.quit()
