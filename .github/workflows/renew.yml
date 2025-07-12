@@ -30,7 +30,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium pyotp
+          pip install selenium pyotp deep-translator
 
       - name: Run renewal script
         env:
