@@ -191,16 +191,13 @@ if __name__ == "__main__":
                 exit_with_error(message="2FA submit button not found. Exiting.")
 
             # Find if account has 2FA enabled or if is relying on email verification code
-            CODE_METHOD = None
+            # ---- Detect TOTP page (six boxes inside div id="totp-input") ----
             try:
-                code_form = browser.find_element(by=By.ID, value="otp-input")
-                CODE_METHOD = "email"
+                code_form = browser.find_element(By.ID, "totp-input")
+                CODE_METHOD = "totp6"          # our new code path
             except NoSuchElementException:
-                try:
-                    code_form = browser.find_element(by=By.ID, value="challenge_code")
-                    CODE_METHOD = "app"
-                except NoSuchElementException:
-                    exit_with_error(message="2FA/Email code input not found. Exiting.")
+                CODE_METHOD = None
+
 
             # Account has email verification code
             if CODE_METHOD == "email":
@@ -213,20 +210,25 @@ if __name__ == "__main__":
                     else:
                         exit_with_error(message="Email code input not found. Exiting.")
 
-            # Account has 2FA code
-            elif CODE_METHOD == "app":
+            # ---- Six-digit TOTP (id="totp-input") ----
+            if CODE_METHOD == "totp6":
                 totp_secret = os.getenv("NOIP_TOTP_KEY")
                 if not totp_secret:
-                    exit_with_error("NOIP_TOTP_KEY environment variable not set. Exiting.")
+                    exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
 
-                if validate_2fa(totp_secret):
-                    totp = pyotp.TOTP(totp_secret)
-                    browser.execute_script("arguments[0].focus();", code_form)
-                    ActionChains(browser).send_keys(totp.now()).perform()
+                totp_code = pyotp.TOTP(totp_secret).now()
+                otp_inputs = code_form.find_elements(By.TAG_NAME, "input")
+                if len(otp_inputs) != 6:
+                    exit_with_error("Expected 6 input boxes for TOTP, found "
+                                    f"{len(otp_inputs)}. Layout may have changed.")
 
+                for idx, digit in enumerate(totp_code):
+                    otp_inputs[idx].send_keys(digit)
 
-            # Click submit button
-            submit_button[0].click()
+                # click Verify (name="submit")
+                browser.find_element(By.NAME, "submit").click()
+                print("TOTP entered and submitted.")
+
 
         # Wait for account dashboard to load
         try:
