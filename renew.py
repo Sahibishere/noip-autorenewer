@@ -270,11 +270,11 @@ if __name__ == "__main__":
             exit_with_error("Could not load NO-IP hostnames page.")
 
 
-        # Confirm hosts
-try:
-    hosts = get_hosts()
-    print("Confirming hosts phase")
-    confirmed_hosts = 0
+    # Confirm hosts
+    try:
+        hosts = get_hosts()
+        print("Confirming hosts phase")
+        confirmed_hosts = 0
 
     for host in hosts:
         try:
@@ -307,8 +307,8 @@ try:
 except Exception as e:
     print("❌ Error during confirmation phase:", e)
 
-        # Log off
-        finally:
+    # Log off
+    finally:
             print("Logging off\n\n")
             browser.get(LOGOUT_URL)
     else:
