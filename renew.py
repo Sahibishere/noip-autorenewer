@@ -1,11 +1,11 @@
 import os
 import random
+import time
 from getpass import getpass
 from sys import argv
 from time import sleep
 
 import pyotp
-import time
 from deep_translator import GoogleTranslator
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
