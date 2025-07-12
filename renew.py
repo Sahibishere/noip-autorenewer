@@ -237,20 +237,21 @@ if __name__ == "__main__":
         # Go to hostnames page
         browser.get(HOST_URL)
 
-        # --- go to Dynamic DNS page ---
+        # --- go to Dynamic-DNS page ---
         browser.get(HOST_URL)
 
         try:
-            WebDriverWait(browser, 20).until(
+            WebDriverWait(browser, 30).until(
                 lambda d: (
-                "dynamic-dns" in d.current_url and
-                d.find_elements(By.CSS_SELECTOR, "div.stat-panel.overlay--base")
+                    "dynamic-dns" in d.current_url and
+                    d.find_elements(By.XPATH, "//strong/a[contains(., 'Dynamic DNS Hostnames')]")
                 )
             )
             print("Hosts page loaded.")
         except TimeoutException:
             browser.save_screenshot("hosts_page_error.png")
             exit_with_error("Could not load NO-IP hostnames page.")
+
 
         # Confirm hosts
         try:
