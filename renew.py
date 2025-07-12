@@ -5,6 +5,7 @@ from sys import argv
 from time import sleep
 
 import pyotp
+from deep_translator import GoogleTranslator
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -13,7 +14,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from deep_translator import GoogleTranslator
 
 browser_options = ChromeOptions()
 browser_options.add_argument("--headless")
