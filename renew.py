@@ -276,12 +276,12 @@ if __name__ == "__main__":
         print("Confirming hosts phase")
         confirmed_hosts = 0
 
-    for host in hosts:
-        try:
-            current_host = host.find_element(by=By.TAG_NAME, value="a").text
-            print(f'Checking if host "{current_host}" needs confirmation')
-        except Exception:
-            print("⚠️ Could not read host name — skipping.")
+        for host in hosts:
+            try:
+                current_host = host.find_element(by=By.TAG_NAME, value="a").text
+                print(f'Checking if host "{current_host}" needs confirmation')
+            except Exception:
+                print("⚠️ Could not read host name — skipping.")
             continue
 
         try:
