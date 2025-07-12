@@ -147,19 +147,18 @@ if __name__ == "__main__":
         username_input.send_keys(email)
         password_input.send_keys(password)
 
-        # Find and click login button
+        # ---- wait until the Log-In button is really clickable, then click it ----
         try:
-            WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
-                EC.visibility_of_element_located(
-                    (By.ID, "clogs-captcha-button")
-                )
+            login_button = WebDriverWait(browser, 60).until(
+                EC.element_to_be_clickable((By.ID, "clogs-captcha-button"))
             )
-            login_button = browser.find_element(By.ID, "clogs-captcha-button")
-            login_button.click()
+            # bring it into view & click via JS (avoids overlay / reCAPTCHA issues)
+            browser.execute_script("arguments[0].scrollIntoView(true);", login_button)
+            browser.execute_script("arguments[0].click();", login_button)
+            print("Clicked Log-In button.")
         except TimeoutException:
-            exit_with_error(
-                message="Login button not found within the specified timeout."
-            )
+            exit_with_error("Log-In button never became clickable.")
+
 
 
         # Check if login has 2FA enabled and handle it
