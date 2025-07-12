@@ -40,17 +40,7 @@ def translate(text):
     if str(os.getenv("TRANSLATE_ENABLED", True)).lower() == "true":
         return GoogleTranslator(source="auto", target="en").translate(text=text)
     return text
-
-
-def get_user_agent():
-    r = requests.get(url="https://jnrbsn.github.io/user-agents/user-agents.json")
-    r.close()
-    if r.status_code == 200 and len(list(r.json())) > 0:
-        agents = r.json()
-        return list(agents).pop(random.randint(0, len(agents) - 1))
-    else:
-        return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36"
-
+    
 
 def exit_with_error(message):
     print(str(message))
@@ -198,33 +188,6 @@ if __name__ == "__main__":
                 CODE_METHOD = "totp6"          # our new code path
             except NoSuchElementException:
                 CODE_METHOD = None
-
-            # ---- Six-digit TOTP (id="totp-input") ----
-            if CODE_METHOD == "totp6":
-                totp_secret = os.getenv("NOIP_TOTP_KEY")
-                if not totp_secret:
-                    exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
-
-                totp_code = pyotp.TOTP(totp_secret).now()
-                otp_inputs = browser.find_elements(By.CSS_SELECTOR, "#totp-input input")
-
-                if len(otp_inputs) != 6:
-                    exit_with_error("Expected 6 input boxes for TOTP, found "
-                                    f"{len(otp_inputs)}. Layout may have changed.")
-
-                for idx, digit in enumerate(totp_code):
-                    otp_inputs[idx].send_keys(digit)
-
-                # ✅ Step 1: Small delay to ensure all digits register
-                sleep(1)
-
-                # click Verify (name="submit")
-                submit_button = WebDriverWait(browser, 10).until(
-                    EC.element_to_be_clickable((By.NAME, "submit"))
-                )
-                browser.execute_script("arguments[0].scrollIntoView(true);", submit_button)
-                browser.execute_script("arguments[0].click();", submit_button)
-                print("Clicked Verify (submit) button.")
 
             # Account has email verification code
             if CODE_METHOD == "email":
