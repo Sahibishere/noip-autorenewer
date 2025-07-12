@@ -25,11 +25,13 @@ browser = webdriver.Chrome(options=browser_options, service=service)
 
 
 def get_hosts():
-    return (
-        browser.find_element(by=By.ID, value="host-panel")
-        .find_element(by=By.TAG_NAME, value="table")
-        .find_element(by=By.TAG_NAME, value="tbody")
-        .find_elements(by=By.TAG_NAME, value="tr")
+    """
+    Return every hostname “row” on the Dynamic-DNS page.
+    Each row is a <div class="full-width d-block …"> block.
+    """
+    return browser.find_elements(
+        By.CSS_SELECTOR,
+        "div.full-width.d-block.pull-left.pl-20.pb-15.pt-15"
     )
 
 
@@ -235,15 +237,20 @@ if __name__ == "__main__":
         # Go to hostnames page
         browser.get(HOST_URL)
 
-        # Wait for hostnames page to load
+        # --- go to Dynamic DNS page ---
+        browser.get(HOST_URL)
+
         try:
-            WebDriverWait(driver=browser, timeout=60, poll_frequency=3).until(
-                EC.visibility_of(
-                    browser.find_element(by=By.ID, value="host-panel")
+            WebDriverWait(browser, 20).until(
+                lambda d: (
+                "dynamic-dns" in d.current_url and
+                d.find_elements(By.CSS_SELECTOR, "div.stat-panel.overlay--base")
                 )
             )
+            print("Hosts page loaded.")
         except TimeoutException:
-            exit_with_error(message="Could not load NO-IP hostnames page.")
+            browser.save_screenshot("hosts_page_error.png")
+            exit_with_error("Could not load NO-IP hostnames page.")
 
         # Confirm hosts
         try:
@@ -255,7 +262,7 @@ if __name__ == "__main__":
                 current_host = host.find_element(by=By.TAG_NAME, value="a").text
                 print('Checking if host "' + current_host + '" needs confirmation')
                 try:
-                    button = host.find_element(by=By.TAG_NAME, value="button")
+                    button = host.find_element(by=By.TAG_NAME, value="a")
                 except NoSuchElementException as e:
                     break
 
