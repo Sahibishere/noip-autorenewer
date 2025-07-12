@@ -249,12 +249,6 @@ if __name__ == "__main__":
                 # Optional: take a screenshot for debugging
                 browser.save_screenshot("before_totp_input.png")
                 print("📸 Screenshot saved: before_totp_input.png")
-            
-            # Dismiss the "Locale Mismatch" popup if it appears
-            try:
-                # Optional: take a screenshot for debugging
-                browser.save_screenshot("before_totp_input.png")
-                print("📸 Screenshot saved: before_totp_input.png")
 
                 # Dismiss the "Locale Mismatch" popup if it appears
                 try:
