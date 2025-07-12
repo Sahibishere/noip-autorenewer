@@ -230,18 +230,16 @@ if __name__ == "__main__":
                 print("TOTP entered and submitted.")
 
 
-        # Wait for account dashboard to load
+        # ---- Wait until we are off the /login or /2fa page ----
         try:
-            WebDriverWait(driver=browser, timeout=120, poll_frequency=3).until(
-                EC.visibility_of_element_located(
-                    (By.ID, "content-wrapper")
-                )
+            WebDriverWait(browser, 15).until(
+                lambda d: "my.noip.com" in d.current_url
             )
             print("Login successful")
         except TimeoutException:
-            exit_with_error(message="Could not login. Check if account is blocked.")
-        except NoSuchElementException:
-            exit_with_error(message="Could not find element dashboard menu. Exiting.")
+            browser.save_screenshot("after_login.png")
+            exit_with_error("Dashboard did not load after Verify / TOTP step.")
+
 
         # Go to hostnames page
         browser.get(HOST_URL)
