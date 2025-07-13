@@ -213,15 +213,8 @@ if __name__ == "__main__":
                 exit_with_error("NOIP_TOTP_KEY secret missing – cannot fill TOTP code.")
 
             totp_code = pyotp.TOTP(totp_secret).now()
-            
-            # ADD HERE:
             print(f"TOTP code being entered: {totp_code}")
 
-            for idx, digit in enumerate(totp_code):
-                otp_inputs[idx].send_keys(digit)
-                time.sleep(0.2)  # Add a short delay if not already present
-            time.sleep(2)
-    
             try:
                 # Optional: take a screenshot for debugging
                 browser.save_screenshot("before_totp_input.png")
@@ -245,10 +238,11 @@ if __name__ == "__main__":
                     exit_with_error("Expected 6 input boxes for TOTP, found "
                                     f"{len(otp_inputs)}. Layout may have changed.")
 
+                # Now send the TOTP code
                 for idx, digit in enumerate(totp_code):
                     otp_inputs[idx].send_keys(digit)
-
-                sleep(1)  # ensure digits are processed
+                    time.sleep(0.2)
+                time.sleep(2)
 
                 submit_button = WebDriverWait(browser, 10).until(
                     EC.element_to_be_clickable((By.NAME, "submit"))
