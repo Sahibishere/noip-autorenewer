@@ -276,12 +276,6 @@ if __name__ == "__main__":
         # Optional: take a diagnostic screenshot
         browser.save_screenshot("host_page_check.png")
 
-        # Now confirm hosts...
-        hosts = get_hosts()
-        print("Confirming hosts phase")
-        # …rest of your confirmation logic…
-
-
     # Confirm hosts
     try:
         hosts = get_hosts()
