@@ -249,43 +249,38 @@ if __name__ == "__main__":
                 browser.execute_script("arguments[0].scrollIntoView(true);", submit_button)
                 browser.execute_script("arguments[0].click();", submit_button)
                 print("Clicked Verify (submit) button.")
+                
+                # --- Wait for the dashboard to load (the “noip-cart” element) ----
+                try:
+                    WebDriverWait(browser, 20).until(
+                        EC.presence_of_element_located((By.ID, "noip-cart"))
+                    )
+                    print("✅ Dashboard loaded, proceeding to host page")
+                except TimeoutException:
+                    browser.save_screenshot("dashboard_missing.png")
+                    exit_with_error("Dashboard never appeared after 2FA – aborting.")
+
 
             except Exception as e:
                 exit_with_error(f"❌ TOTP autofill or verification failed: {e}")
 
-        # ---- Wait until we are on the dashboard OR the TOTP page ----
-        try:
-            WebDriverWait(browser, 20).until(
-                lambda d: (
-                    "my.noip.com" in d.current_url               # dashboard
-                    or d.find_elements(By.ID, "totp-input")      # 6-box TOTP form
-                )
-            )
-        except TimeoutException:
-            browser.save_screenshot("after_login.png")
-            exit_with_error("Login did not advance to dashboard or 2-factor page.")
-
-
-
-
-        # Go to hostnames page
+        # ——— Navigate to the hostnames page only once ———
         browser.get(HOST_URL)
-        sleep(2)  # wait for possible redirect
 
-        # Print current URL to see if we're actually on the host page
-        print("📍 Current URL after host page load:", browser.current_url)
+        # Wait up to 20s for the host panel to appear
+        WebDriverWait(browser, 20).until(
+            EC.presence_of_element_located((By.ID, "host-panel"))
+        )
+        print("✅ Hosts page loaded.")
+
+        # Optional: take a diagnostic screenshot
         browser.save_screenshot("host_page_check.png")
 
-        # Check if we're back on the login page (session may have failed)
-        if "login" in browser.current_url:
-            exit_with_error("❌ Redirected back to login — session may have failed after 2FA.")
+        # Now confirm hosts...
+        hosts = get_hosts()
+        print("Confirming hosts phase")
+        # …rest of your confirmation logic…
 
-        # Now check for the host panel
-        try:
-            WebDriverWait(browser, 20).until(
-                EC.presence_of_element_located((By.ID, "host-panel"))
-            )
-            print("✅ Hosts page loaded.")
         except TimeoutException:
             browser.save_screenshot("hosts_page_error.png")
             exit_with_error("❌ Could not load NO-IP hostnames page — host panel missing.")
@@ -330,16 +325,12 @@ if __name__ == "__main__":
         print("❌ Error during confirmation phase:", e)
 
     # Ensure login page is accessible
-    if browser.current_url != LOGIN_URL:
-        print("❌ Cannot access login page:\t" + LOGIN_URL)
-        browser.quit()
-        exit(1)
-
     try:
-        pass  # Placeholder for 2FA and host confirmation logic
-
-        print("✅ Logging off...")
+        # …after your confirmation try/except…
+        print("✅ Logging off…")
         browser.get(LOGOUT_URL)
+        browser.quit()
+
        
     except Exception as e:
         print("❌ Script failed with error:", e)
