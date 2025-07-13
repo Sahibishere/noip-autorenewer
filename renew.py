@@ -281,11 +281,6 @@ if __name__ == "__main__":
         print("Confirming hosts phase")
         # …rest of your confirmation logic…
 
-        except TimeoutException:
-            browser.save_screenshot("hosts_page_error.png")
-            exit_with_error("❌ Could not load NO-IP hostnames page — host panel missing.")
-
-
 
     # Confirm hosts
     try:
