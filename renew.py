@@ -6,8 +6,8 @@ from sys import argv
 from time import sleep
 
 import pyotp
+import undetected_chromedriver as uc
 from deep_translator import GoogleTranslator
-from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -27,7 +27,7 @@ browser_options.add_experimental_option("useAutomationExtension", False)
 
 service = ChromeService(executable_path='/usr/local/bin/chromedriver')
 
-browser = webdriver.Chrome(options=browser_options, service=service)
+browser = uc.Chrome(options=browser_options, service=ChromeService(ChromeDriverManager().install()))
 
 
 def get_hosts():
