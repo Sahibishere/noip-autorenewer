@@ -324,7 +324,4 @@ if __name__ == "__main__":
     except Exception as e:
         print("❌ Script failed with error:", e)
         browser.save_screenshot("fatal_error.png")
-
-    finally:
-        print("🧹 Closing browser.")
-        browser.quit()
+        
