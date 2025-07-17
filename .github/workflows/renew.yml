@@ -3,7 +3,7 @@ name: Renew No-IP
 on:
   # run every SATURDAY at 03:00 UTC  (once per week, safely inside the 7-day window)
   schedule:
-    - cron: '0 4 * * 4'
+    - cron: '0 15 * * 4'
   workflow_dispatch:        # <-- leave this so you can run it by hand
 
 
